@@ -99,4 +99,25 @@ app.delete('/:ar/:id', (req, res) => {
 	.catch(err => { res.status(404).send(err) });
 });
 
+//borrar un talle
+
+// borrar un producto
+
+app.delete('/:ar', (req, res) => {
+
+	Sizes.destroy(
+		
+		{
+			where: { ar: req.params.ar }
+		}
+
+	)
+	.then(() => {
+
+		res.status(200).send("Delete");
+
+	})
+	.catch(err => { res.status(404).send(err) });
+});
+
 module.exports = app;

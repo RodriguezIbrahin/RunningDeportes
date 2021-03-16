@@ -13,6 +13,7 @@ import UpdateProduct from "./UpdateProduct";
 import CreateSize from "./CreateSize";
 import DeleteSizeProduct from "./DeleteSizeProduct";
 import CreateSizeProduct from "./CreateSizeProduct";
+import DeleteSize from "./DeleteSize";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -84,6 +85,7 @@ export default function CrudPanel() {
           <Tab label="Borrar Producto" {...a11yProps(3)} />
           <Tab label="Borrar Talle de Producto" {...a11yProps(4)} />
           <Tab label="Agregar Talle a un Producto" {...a11yProps(5)} />
+          <Tab label="Borrar un Talle" {...a11yProps(6)} />
         </Tabs>
       </AppBar>
       <SwipeableViews
@@ -108,6 +110,9 @@ export default function CrudPanel() {
         </TabPanel>
         <TabPanel value={value} index={5} dir={theme.direction}>
           <CreateSizeProduct/>
+        </TabPanel>
+        <TabPanel value={value} index={6} dir={theme.direction}>
+          <DeleteSize/>
         </TabPanel>
       </SwipeableViews>
     </div>
