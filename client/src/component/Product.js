@@ -3,7 +3,7 @@ import Lottie from "react-lottie";
 import { connect } from "react-redux";
 import { bindActionCreators } from 'redux';
 import * as actionCreators from "../redux/Actions";
-import { Grid, Typography, Paper} from '@material-ui/core';
+import { Grid, Typography, Paper, Button} from '@material-ui/core';
 import shoes from "../animations/shoes.json";
 
 const defaultOptions = {
@@ -105,6 +105,19 @@ export class Product extends React.Component {
                                 <br/><i>Talles</i><br/> {this.props.product.sizes.map( size => <i> {size.ar} </i>)} <br/>
 
                             </Typography>
+
+                            <Button
+
+            fullWidth
+            type="submit"
+            variant="contained"
+            color="primary"
+            href="https://api.whatsapp.com/send/?phone=%2B5491162067821&text&app_absent=0" target="_blank"
+          >
+
+            Consultas
+
+          </Button>
               
                         </Grid>
                 

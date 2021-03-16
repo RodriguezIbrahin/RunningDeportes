@@ -38,7 +38,6 @@ function ProductCard(props) {
           <Typography variant="body2" color="textSecondary" component="p">
               <lu>
                 <li>  Precio: ${props.props.price}</li>
-                <li>  Talles: {!props.props.sizes ? <i>aca</i> : props.props.sizes.map( size => size.ar)}</li>
                 <li>  Marca: {props.props.marca} </li> 
               </lu>
           </Typography>

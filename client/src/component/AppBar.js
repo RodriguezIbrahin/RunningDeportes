@@ -15,6 +15,7 @@ import Sizes from './Size';
 import Catalogo from './Catalogo';
 import Login from "./Login";
 import UserPanel from "./UserPanel";
+import Fotter from "./Fotter"
 
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -209,7 +210,7 @@ function AppBars(props) {
         <div className={classes.toolbar} />
 
         {props.login === 1 && !props.singup ? <Login/> : props.login === 1 && props.singup ? <UserPanel/> : <Catalogo/> }
-
+        <Fotter/>
       </main>
 
     </div>  
