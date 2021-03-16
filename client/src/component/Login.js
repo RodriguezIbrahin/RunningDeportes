@@ -14,7 +14,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from 'redux';
 import * as actionCreators from "../redux/Actions";
 
-import { AlertError, AlertSucess } from "./Alerts";
+import { AlertError } from "./Alerts";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
