@@ -33,7 +33,7 @@ export class Product extends React.Component {
             <Grid container direction="row" justify="space-evenly" alignItems="center">
                 
 
-                {!this.props.product.images ? <Grid item> <Lottie options={defaultOptions}/> </Grid> :
+                {!this.props.product.images ? <Grid item> <Lottie options={defaultOptions} width={300} height={300} /> </Grid> :
                 
                 <Grid item container direction="row" justify="space-evenly" alignItems="center">
                     

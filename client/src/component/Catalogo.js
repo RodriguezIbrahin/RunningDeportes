@@ -32,7 +32,7 @@ class Catalogo extends React.Component {
 
                 <Grid container direction="row" justify="space-around" alignItems="center" spacing={6}>
 
-                  { this.props.id > 0 ? <Product/> : this.props.products.length === 0 ? <Grid item> <Lottie options={defaultOptions}/> </Grid> 
+                  { this.props.id > 0 ? <Product/> : this.props.products.length === 0 ? <Grid item> <Lottie options={defaultOptions} width={300} height={300} /> </Grid> 
                   
                   : this.props.products.map( product => <Grid item> <ProductCard props={product}/> </Grid>)}
 

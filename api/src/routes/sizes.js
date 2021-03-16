@@ -7,7 +7,8 @@ app.get('/', (req, res) => {
 
     Sizes.findAll(
         {
-            include: Products
+            include: Products,
+            order: [["ar",  "asc" ]]
         }
     )
     
