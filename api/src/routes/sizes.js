@@ -120,4 +120,20 @@ app.delete('/:ar', (req, res) => {
 	.catch(err => { res.status(404).send(err) });
 });
 
+app.get('/nada/:id', (req, res) => {
+
+    Sizes.findAll(
+        {
+            include: Products,
+            order: [["ar",  "asc" ]]
+        }
+    )
+    
+	.then((sizes) => {
+
+        res.send(sizes);
+        
+	})
+	.catch(err => { res.status(404).send(err) });
+});
 module.exports = app;
