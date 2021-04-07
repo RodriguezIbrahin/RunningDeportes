@@ -9,12 +9,12 @@ import {
 
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
-import {URL} from "../Api";
+import {URL} from "../../Api";
 import { connect } from "react-redux";
 import { bindActionCreators } from 'redux';
-import * as actionCreators from "../redux/Actions";
+import * as actionCreators from "../../redux/Actions";
 
-import { AlertError } from "./Alerts";
+import { AlertError } from "../Alerts";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -36,27 +36,45 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Login(props) {
-    const classes = useStyles();
+function SignIn(props) {
 
-    const [error, setError] = React.useState(false);
+  const classes = useStyles();
 
-    const handleLogin = (event) => {
+  const [error, setError] = React.useState(false);
+
+  const handleLogin = (event) => {
      
-      event.preventDefault();
+    event.preventDefault();
 
-      axios.post(`${URL}/users/singin`,{ username: event.target.email.value, password: event.target.password.value })
+    if(!event.target.email.value || !event.target.password.value){
 
-      .then(response => {
-        
-        localStorage.setItem( "token", response.data.token );
-        localStorage.setItem( "rol", response.data.rol );
-        setError(false);
-        props.SingUp(true);
+      setError(true)
 
-      })
-      .catch(error => setError(true));
-    };
+    }
+    else axios.post(`${URL}/users/singin`,{ email: event.target.email.value, password: event.target.password.value })
+
+    .then(response => {
+
+      localStorage.setItem( "token", response.data.token );
+      localStorage.setItem( "rol", response.data.rol );
+      localStorage.setItem( "fullname", response.data.fullname );
+      setError(false);
+      props.SingIn(true);
+      props.SignUp(false);
+      JSON.parse(localStorage.getItem('cartNoRegister')).map(json => props.UpDownProductCart(json));
+      localStorage.removeItem('cartNoRegister');
+      props.ResetCartNoRegister()
+
+    })
+    .catch(error => setError(true));
+      
+  };
+
+  const handleSingUp = (event) => {
+
+    props.SignUp(true);
+
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -128,23 +146,23 @@ function Login(props) {
 
           </Button>
 
-          <Grid container>
+          <Grid container spacing={2}>
 
             <Grid item xs>
 
               <Link href="#" variant="body2">
 
-                Forgot password?
+                {"Olvidaste tu contraseña?"}
 
               </Link>
 
             </Grid>
 
-            <Grid item>
+            <Grid item >
 
               <Link href="#" variant="body2">
 
-                {"Don't have an account? Sign Up"}
+                <a onClick={handleSingUp}> {"No tienes una cuenta? Registrate"} </a>
 
               </Link>
 
@@ -173,4 +191,4 @@ function mapDispatchToProps(dispatch) {
 }
 
 
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(null, mapDispatchToProps)(SignIn);

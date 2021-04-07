@@ -1,43 +1,42 @@
 const app = require('express').Router();
 const { Products, Sizes, Images , Stock} = require('../db.js');
+const authConfig = require('../auth');
+const jwt = require("jsonwebtoken");
 
 // retorno todos los talles
 
 app.get('/', (req, res) => {
 
-    Sizes.findAll(
-        {
-            include: Products,
-            order: [["ar",  "asc" ]]
-        }
-    )
-    
-	.then((sizes) => {
-
-        res.send(sizes);
+    (async function (){
         
-	})
-	.catch(err => { res.status(404).send(err) });
+        try {
+            const size = await Sizes.findAll( { include: Products, order: [['ar', 'ASC']] } )
+
+            res.status(201).send(size);
+        }
+        catch (err){ res.status(404).send(err) }
+
+    })()
+
 });
 
 // retorno un talle
 
 app.get('/:ar', (req, res) => {
 
-	Sizes.findOne({
-
-		where: { ar: req.params.ar},
-        include:  [ { model: Products, include: [Images] } ]
+    (async function (){
         
-    })
+        try {
+            const sizes = await Sizes.findOne({ where: { ar: req.params.ar}, include:  [ { model: Products, include: [Images] } ] });
 
-	.then((sizes) => {
+            const stockInSize = sizes.products.filter(sizes => sizes.stock.stock > 0);
 
-        res.send(sizes);
-        
-    })
-    
-	.catch(err => { res.status(404).send(err) });
+            res.status(201).send({ar: req.params.ar, products: stockInSize});
+        }
+        catch (err){ res.status(404).send(err) }
+
+    })()
+
 });
 
 
@@ -46,94 +45,126 @@ app.get('/:ar', (req, res) => {
 
 app.post('/', (req, res) => {
 
-    Sizes.create(req.body)
-    
-    .then((sizes) =>{
+    let token = req.headers.authorization.split(' ')[1];
 
-        res.status(201).send(sizes);
-        
-    })
-    .catch(err => { res.status(404).send(err) });
+	jwt.verify( token, authConfig.secret, function ( error, decoded ){
+
+		error ? res.status(404).send( { message: error} ) : decoded.rol !== "admin" ? res.status(403).send( { message: "no tiene permisos"} ) :
+
+		(async function (){
+
+			try {
+	
+				const create= await Sizes.create(req.body)
+
+				res.status(201).send(create);
+	
+			}
+			catch (err){
+	
+				res.status(404).send(err)	
+	
+			}
+		})()
+
+	});
+
 });
 
 
 //asigan un talle a un producto
 
 app.post('/:ar/product/:id/stock/:stock', (req, res) => {
+
+    let token = req.headers.authorization.split(' ')[1];
+
+	jwt.verify( token, authConfig.secret, function ( error, decoded ){
+
+		error ? res.status(404).send( { message: error} ) : decoded.rol !== "admin" ? res.status(403).send( { message: "no tiene permisos"} ) :
+
+		(async function (){
+
+			try {
 	
-    Products.findByPk(req.params.id)
-    
-    .then((productos) => {
+				const products= await Products.findByPk(req.params.id);
 
-        Sizes.findByPk(req.params.ar)
+                const size = await Sizes.findByPk(req.params.ar);
 
-        .then((talle) => {
-            
-            productos.addSizes(talle, { through: { stock: req.params.stock } });
+                const stoc = await products.addSizes(size, { through: { stock: req.params.stock } });
 
-            res.status(201).send("success");
 
-        })
-        .catch(err => { res.status(404).send(err) });
+				res.status(201).send("success");
+	
+			}
+			catch (err){
+	
+				res.status(404).send(err)	
+	
+			}
+		})()
 
-    })
-    .catch(err => { res.status(404).send(err) });
+	});
+
 });
 
 //borrar en talle de un articulo
 
 app.delete('/:ar/:id', (req, res) => {
 
-	Stock.destroy(
-		
-		{
-			where: { id: req.params.id, ar: req.params.ar}
-		}
+    let token = req.headers.authorization.split(' ')[1];
 
-	)
-	.then(() => {
+	jwt.verify( token, authConfig.secret, function ( error, decoded ){
 
-		res.status(200).send("Delete");
+		error ? res.status(404).send( { message: error} ) : decoded.rol !== "admin" ? res.status(403).send( { message: "no tiene permisos"} ) :
 
-	})
-	.catch(err => { res.status(404).send(err) });
+		(async function (){
+
+			try {
+	
+                const stock = await Stock.destroy( { where: { id: req.params.id, ar: req.params.ar} } )
+
+				res.status(201).send("Delete");
+	
+			}
+			catch (err){
+	
+				res.status(404).send(err)	
+	
+			}
+		})()
+
+	});
+
 });
 
 //borrar un talle
 
-// borrar un producto
-
 app.delete('/:ar', (req, res) => {
 
-	Sizes.destroy(
-		
-		{
-			where: { ar: req.params.ar }
-		}
+    let token = req.headers.authorization.split(' ')[1];
 
-	)
-	.then(() => {
+	jwt.verify( token, authConfig.secret, function ( error, decoded ){
 
-		res.status(200).send("Delete");
+		error ? res.status(404).send( { message: error} ) : decoded.rol !== "admin" ? res.status(403).send( { message: "no tiene permisos"} ) :
 
-	})
-	.catch(err => { res.status(404).send(err) });
+		(async function (){
+
+			try {
+	
+                const size = await Sizes.destroy( { where: { ar: req.params.ar } } )
+
+				res.status(201).send("Delete");
+	
+			}
+			catch (err){
+	
+				res.status(404).send(err)	
+	
+			}
+		})()
+
+	});
+
 });
 
-app.get('/nada/:id', (req, res) => {
-
-    Sizes.findAll(
-        {
-            include: Products,
-            order: [["ar",  "asc" ]]
-        }
-    )
-    
-	.then((sizes) => {
-
-        res.send(sizes);
-        
-	})
-	.catch(err => { res.status(404).send(err) });
-});
 module.exports = app;

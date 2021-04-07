@@ -39,6 +39,7 @@ export default function CreateSizeProduct () {
        id: "",
        name: "",
        size: "",
+       stock: "",
 
     });
 
@@ -48,7 +49,7 @@ export default function CreateSizeProduct () {
 
     const handleIdChange = (prop) => (event) => {
 
-        setValues({ ...values, name: "", size: "", [prop]: event.target.value });
+        setValues({ ...values, stock: "", name: "", size: "", [prop]: event.target.value });
 
         axios.get(`${URL}/products/${event.target.value}`)
 
@@ -74,18 +75,15 @@ export default function CreateSizeProduct () {
 
     const ClickDelete = (event) => {
 
-        if(values.id && values.name && values.size) {
-            
-            console.log(values.size)
-            console.log(values.id)
+        if(values.stock && values.id && values.name && values.size) {
 
-            axios.post(`${URL}/sizes/${values.size}/product/${values.id}/stock/1`, " " ,{ headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
+            axios.post(`${URL}/sizes/${values.size}/product/${values.id}/stock/${values.stock}`, " " ,{ headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } })
 
             .then(ress => {
 
                 setSucces(true);
                 setError(false);
-                setValues({ ...values, id: "", name: "", size: ""});
+                setValues({ ...values, stock: "", id: "", name: "", size: ""});
             })
             .catch(err => {
 
@@ -103,7 +101,7 @@ export default function CreateSizeProduct () {
 
     const ClickReset = (event) => {
 
-        setValues({ ...values, id: "", name: "", size: ""});
+        setValues({ ...values, stock: "", id: "", name: "", size: ""});
         setError(false)
         setSucces(false)
     };
@@ -159,6 +157,19 @@ export default function CreateSizeProduct () {
 
             </FormControl>
 
+            <FormControl className={clsx(classes.margin)} variant="outlined">
+
+                <InputLabel htmlFor="product-stock">Stock</InputLabel>
+
+                <OutlinedInput
+                   id="product-stock"
+                   value={values.stock}
+                   onChange={handleChange('stock')}
+                   labelWidth={50}
+                />
+
+            </FormControl>
+
 
         </Grid>
 
@@ -174,9 +185,9 @@ export default function CreateSizeProduct () {
 
         </Grid>
 
-        <Grid item container direction="row" justify="space-between" alignItems="center"  className={classes.root} xs={6}>
+        <Grid item container direction="row" justify="space-between" alignItems="center"  className={classes.root} xs={12}>
             
-            <Grid item xs={1} >
+            <Grid item container direction="row" justify="center" alignItems="center" xs={6} >
 
                 <Button
                   variant="contained"
@@ -192,7 +203,7 @@ export default function CreateSizeProduct () {
 
             </Grid>
 
-            <Grid item xs={1} >
+            <Grid item container direction="row" justify="center" alignItems="center" xs={6} >
 
                 <Button
                   variant="contained"

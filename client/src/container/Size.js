@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from 'redux';
 import * as actionCreators from "../redux/Actions";
 import {List, Typography,Divider } from '@material-ui/core';
-import ButtonSize from "./ButtonSize";
+import ButtonSize from "../component/ButtonSize";
 
 export class Sizes extends React.Component {
 

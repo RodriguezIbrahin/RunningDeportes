@@ -13,15 +13,17 @@ import {
 
 import Sizes from './Size';
 import Catalogo from './Catalogo';
-import Login from "./Login";
-import UserPanel from "./UserPanel";
-import Fotter from "./Fotter"
+import Sign from "./Sign";
+import Fotter from "../component/Fotter";
+import ModalBotton from "./ModalBotton";
+import ShoppingCart from "./ShoppingCart"
 
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import InputIcon from '@material-ui/icons/Input';
 import PersonIcon from '@material-ui/icons/Person';
+import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 
 
 const drawerWidth = 100;
@@ -106,29 +108,21 @@ function AppBars(props) {
     setOpen(false);
   };
 
-  const handleLogin = () => {
+  React.useEffect(() => {
 
-    setOpen(false);
+    if( localStorage.getItem('token') ){
 
-    if(!props.singup && props.login === 0){
+      props.SingIn(true);
+
+      props.SignUp(false);  
+    }
+    if(!localStorage.getItem('token') && localStorage.getItem('cartNoRegister') ){
     
-      props.GetLogin(1);  
-        
-    }if(!props.singup && props.login === 1){
-
-      props.GetLogin(0);
-
-    }if(props.singup && props.login === 1){
-
-      props.GetLogin(0);
-
-    }if(props.singup && props.login === 0){
-
-      props.GetLogin(1);
-
+      JSON.parse(localStorage.getItem('cartNoRegister')).map(json => props.CartNoRegister(json))
     }
 
-  };
+  },[])
+
 
   return (
 
@@ -165,11 +159,9 @@ function AppBars(props) {
 
           </Typography>
 
-          <IconButton color="inherit" onClick={handleLogin}>
+          <ModalBotton props={<ShoppingCart/>} icon={<ShoppingCartOutlinedIcon/>} style={{height: "95vh", width: "90vw" }} color={"inherit"}/>
 
-            {props.singup === true ? <PersonIcon/> : <InputIcon/> }
-
-          </IconButton>
+          <ModalBotton props={<Sign/>} icon={props.singin === true ? <PersonIcon/> : <InputIcon/> } style={{height: "95vh", width: "90vw" }} color={"inherit"}/>
 
         </Toolbar>
 
@@ -209,7 +201,8 @@ function AppBars(props) {
         
         <div className={classes.toolbar} />
 
-        {props.login === 1 && !props.singup ? <Login/> : props.login === 1 && props.singup ? <UserPanel/> : <Catalogo/> }
+         <Catalogo/> 
+
         <Fotter/>
       </main>
 
@@ -224,8 +217,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
   return {
-     login: state.login,
-     singup: state.singup
+    singin: state.singin
   }
 }
 

@@ -1,5 +1,8 @@
 const app = require('express').Router();
 const { Products, Sizes, Images, Stock} = require('../db.js');
+const authConfig = require('../auth');
+const jwt = require("jsonwebtoken");
+
 
 
 
@@ -23,40 +26,28 @@ app.get('/', (req, res) => {
 // retorno un producto segun id
 
 app.get('/:id', (req, res) => {
-	
-	Products.findOne(
-
-		{
-		   where: { id: req.params.id} ,
-		   include: [Sizes, Images]
-		}
-		
-	)
-	.then((products) => {
-
-		res.status(200).send(products);
-
-	})
-	.catch(err => { res.status(404).send(err) });
-});
-
-
-
-// crea un producto
-
-app.post('/', (req, res) => {
 
 	(async function (){
 
 		try {
 
-			const crea = await Products.create(req.body);
+			const product = await Products.findOne({ where: { id: req.params.id}, include: [Sizes, Images], order: [[Sizes, 'ar', 'ASC' ]] });
 
-			req.body.images.forEach(element => Images.create({productId: crea.dataValues.id, img: element}));
+			const sizes = product.sizes.filter(sizes => sizes.stock.stock > 0);
 
-			req.body.sizes.forEach(element => Stock.create({id: crea.dataValues.id, ar: element[0], stock: element[1]}));
+			let products = { 
 
-			res.status(201).send(crea);
+				id: product.id, 
+				name: product.name, 
+				price: product.price, 
+				pricelister: product.pricelister, 
+				description: product.description, 
+				marca: product.marca, 
+				sizes: sizes, 
+				images: product.images 
+			}
+			
+			res.status(200).send(products);
 
 		}
 		catch (err){
@@ -65,6 +56,43 @@ app.post('/', (req, res) => {
 
 		}
 	})()
+
+});
+
+
+
+// crea un producto
+
+app.post('/', (req, res) => {
+
+	let token = req.headers.authorization.split(' ')[1];
+
+	jwt.verify( token, authConfig.secret, function ( error, decoded ){
+
+		error ? res.status(404).send( { message: error} ) : decoded.rol !== "admin" ? res.status(403).send( { message: "no tiene permisos"} ) :
+
+		(async function (){
+
+			try {
+	
+				const crea = await Products.create(req.body);
+	
+				req.body.images.forEach(element => Images.create({productId: crea.dataValues.id, img: element}));
+	
+				req.body.sizes.forEach(element => Stock.create({id: crea.dataValues.id, ar: element[0], stock: element[1]}));
+	
+				res.status(201).send(crea);
+	
+			}
+			catch (err){
+	
+				res.status(404).send(err)	
+	
+			}
+		})()
+
+	});
+
 });
 
 
@@ -73,18 +101,30 @@ app.post('/', (req, res) => {
 
 app.put('/:id', (req, res) => {
 
-	Products.update(req.body,
+	
+	let token = req.headers.authorization.split(' ')[1];
 
-		{
-			where: { id: req.params.id }
-		}
-	)
-	.then((products) => {
+	jwt.verify( token, authConfig.secret, function ( error, decoded ){
 
-		res.status(200).send(products);
+		error ? res.status(404).send( { message: error} ) : decoded.rol !== "admin" ? res.status(403).send( { message: "no tiene permisos"} ) :
 
-	})
-	.catch(err => { res.status(404).send(err) });
+		(async function (){
+
+			try {
+	
+				const update = await Products.update( req.body,{ where: { id: req.params.id }} )
+
+				res.status(201).send(update);
+	
+			}
+			catch (err){
+	
+				res.status(404).send(err)	
+	
+			}
+		})()
+
+	});
 })
 
 
@@ -93,19 +133,30 @@ app.put('/:id', (req, res) => {
 
 app.delete('/:id', (req, res) => {
 
-	Products.destroy(
-		
-		{
-			where: { id: req.params.id }
-		}
+	let token = req.headers.authorization.split(' ')[1];
 
-	)
-	.then(() => {
+	jwt.verify( token, authConfig.secret, function ( error, decoded ){
 
-		res.status(200).send("Delete");
+		error ? res.status(404).send( { message: error} ) : decoded.rol !== "admin" ? res.status(403).send( { message: "no tiene permisos"} ) :
 
-	})
-	.catch(err => { res.status(404).send(err) });
+		(async function (){
+
+			try {
+	
+				const update = await Products.destroy( { where: { id: req.params.id } })
+
+				res.status(201).send("Delete");
+	
+			}
+			catch (err){
+	
+				res.status(404).send(err)	
+	
+			}
+		})()
+
+	});
+
 });
 
 

@@ -265,9 +265,9 @@ export default function UpdateProduct () {
 
         </Grid>
 
-        <Grid item container direction="row" justify="space-between" alignItems="center"  className={classes.root} xs={6}>
+        <Grid item container direction="row" justify="space-between" alignItems="center"  className={classes.root} xs={12}>
             
-            <Grid item xs={1} >
+            <Grid item container direction="row" justify="center" alignItems="center" xs={6} >
 
                 <Button
                   variant="contained"
@@ -283,7 +283,7 @@ export default function UpdateProduct () {
 
             </Grid>
 
-            <Grid item xs={1} >
+            <Grid item container direction="row" justify="center" alignItems="center" xs={6} >
 
                 <Button
                   variant="contained"

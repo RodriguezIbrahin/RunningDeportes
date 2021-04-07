@@ -29,7 +29,7 @@ export function AlertError(props) {
                 }
             >
                 
-                Ups! Parece algo malio sal... 
+                Ups! Parece que algo malio sal... 
 
              </Alert>
 
@@ -62,7 +62,7 @@ export function AlertSucess(props) {
                     </IconButton>
                 }
             >
-                Genial! Tiene buena pinta! 
+                Por su pollo! 
   
             </Alert>
   

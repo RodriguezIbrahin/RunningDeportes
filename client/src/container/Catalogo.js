@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from 'redux';
 import * as actionCreators from "../redux/Actions";
 import { Grid, Container } from '@material-ui/core';
-import ProductCard from "./ProductCard";
-import Product from "./Product";
+import ProductCard from "../component/ProductCard";
+import Product from "../component/products/Product";
 import shoes from "../animations/shoes.json";
 
 const defaultOptions = {

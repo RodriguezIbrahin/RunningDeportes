@@ -1,52 +1,78 @@
 const app = require('express').Router();
-const { User } = require('../db.js');
+const { User, Order } = require('../db.js');
 const bcrypt = require('bcrypt');
-const { Op } = require("sequelize");
 const jwt = require('jsonwebtoken');
 const authConfig = require('../auth');
+const nodemailer = require('nodemailer');
 
+//Crear un usuario
 
 app.post('/', (req, res) => {
 
 
-    if (!req.body.password || !req.body.email || !req.body.username){
+    if (!req.body.password || !req.body.email || !req.body.name || !req.body.last_name){
        return res.status(404).send({menssage: "error"})
 
     }else bcrypt.hash( req.body.password, authConfig.rounds, function( err ,  hash )  { 
 
-        User.create({
+        (async function (){
 
-            username: req.body.username,
-            email: req.body.email,
-            rol: req.body.rol,
-            password: hash,
-        
-        })
+            try {
+    
+                const user = await User.create({
 
-        .then((acc) => { res.status(200).send(acc) })
+                   name: req.body.name,
+                   last_name: req.body.last_name,
+                   email: req.body.email,
+                   rol: req.body.rol,
+                  password: hash,
+            
+                });
 
-        .catch(err => { res.status(404).send(err) });
+                const order = await Order.create({ userId: user.id });
+
+                const transporter = nodemailer.createTransport({
+                    service: 'Gmail',
+                    auth: {
+                        user: 'noreply.runningdeportes@gmail.com',
+                        pass: 'runningdeportes'
+                    }
+                });
+
+                const mailOptions = {
+                    from: "noreply.runningdeportes@gmail.com",
+                    to: req.body.email,
+                    subject: "Email confirmation - RunningDeportes",
+                    html: `Bienvenido a Running Deportes! Esperamos disfrutes de nuestros productos. <br />`,
+                };
+
+                const send = await transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                      console.log(error);
+                    } else {
+                      console.log("Email enviado");
+                    }
+                });
+
+                res.status(200).send(user);
+    
+            }
+            catch (err){ res.status(404).send(err) }
+
+        })()
 
     });
 
 
 });
 
-
+//login
 
 app.post('/singin', (req, res) => {
 
     User.findOne({
 
-        where: {
-
-            [Op.or]: [
-                { email: req.body.username},
-                { username: req.body.username},
-            ],
-
-        },
-
+        where: { email: req.body.email },
     })
 
     .then((acc) => {
@@ -57,13 +83,13 @@ app.post('/singin', (req, res) => {
             
             if(result){
 
-                let payload = { username: acc.username, rol: acc.rol}
+                let payload = { id: acc.id, name: acc.name, last_name: acc.last_name, rol: acc.rol}
 
                 jwt.sign( payload,  authConfig.secret, function( error, token ){
 
                     if(error) { res.status(500).send( { error } );}
 
-                    else{ res.status(200).send( { rol: acc.rol, token } );}
+                    else{ res.status(200).send( { rol: acc.rol, token , fullname: acc.name + " " + acc.last_name} );}
 
                 })
             }

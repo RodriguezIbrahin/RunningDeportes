@@ -2,6 +2,7 @@ require('dotenv').config();
 const { Sequelize, DataTypes } = require('sequelize');
 const fs = require('fs');
 const path = require('path');
+const payment = require('./models/payment');
 
 
 const {
@@ -32,7 +33,7 @@ const sequelize = process.env.NODE_ENV === "production" ?
         },
         ssl: true,
     })
-    :new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/RunningDeportes`, {
+    : new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/RunningDeportes`, {
 
         logging: false, // set to console.log to see the raw SQL queries
         native: false, // lets Sequelize know we can use pg-native for ~30% more speed
@@ -67,19 +68,39 @@ sequelize.models = Object.fromEntries(capsEntries);
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
 
-const { Products, Images, Sizes, Stock} = sequelize.models;
+const { Products, Images, Sizes, Stock, User, Order, Quantity, Payment} = sequelize.models;
 
 
-// Aca vendrian las relaciones
+//relaciones
 
 //el producto va a tener muchas images
 
-Products.hasMany(Images); // agrega una tabla a images productosid
+Products.hasMany(Images);
 
 //sizes y productos se relacionan mxm en tabla stock
 
 Products.belongsToMany(Sizes, { through: 'stock', foreignKey: 'id'});
 Sizes.belongsToMany(Products, { through: 'stock', foreignKey: 'ar'});
+
+//Products y order se relacionan mxm en tabla order_products
+
+Products.belongsToMany(Order, { through: 'quantity', foreignKey: 'products'});
+Order.belongsToMany(Products, { through: 'quantity', foreignKey: 'order'});
+
+//el user va a tener muchas ordenes
+
+User.hasMany(Order);
+
+//las Cantidades tienen un talle
+
+Sizes.belongsToMany(Quantity, { through: 'sizequan', foreignKey: 'ar'});
+Quantity.belongsToMany(Sizes, { through: 'sizequan', foreignKey: 'id'});
+
+
+//el pago es de una orden
+
+Order.hasOne(Payment);
+
 
 
 module.exports = {

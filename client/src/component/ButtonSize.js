@@ -5,15 +5,13 @@ import * as actionCreators from "../redux/Actions";
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
-function ButtonSize({props, GetProductsSize, GetIdProduct, GetLogin, login}) {
+function ButtonSize({props, GetProductsSize, GetIdProduct}) {
 
   const handleClick = (event) => {
     
     GetProductsSize(props);
 
-    GetIdProduct(0);
-
-    GetLogin(0);    
+    GetIdProduct(0);   
 
   };
 
@@ -29,11 +27,6 @@ function ButtonSize({props, GetProductsSize, GetIdProduct, GetLogin, login}) {
   );
 }
 
-function mapStateToProps(state) {
-  return {
-     login: state.login
-  }
-}
 
 function mapDispatchToProps(dispatch) {
 
@@ -41,4 +34,4 @@ function mapDispatchToProps(dispatch) {
 }
 
   
-export default connect(mapStateToProps, mapDispatchToProps)(ButtonSize);
+export default connect(null, mapDispatchToProps)(ButtonSize);

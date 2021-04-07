@@ -42,6 +42,7 @@ export default function CreateProduct () {
        description: "",
        marca: "",
        sizes:  "",
+       stock: "",
        images1: "",
        images2: "",
        images3: "",
@@ -60,9 +61,11 @@ export default function CreateProduct () {
 
     const ClickCreate = (event) => {
 
-        if(values.name && values.price && values.pricelister && values.description && values.marca && values.sizes && values.images1 && values.images2 && values.images3 ) {
+        if(values.stock && values.name && values.price && values.pricelister && values.description && values.marca && values.sizes && values.images1 && values.images2 && values.images3 ) {
             
-            let stock = values.sizes.split(",").map( size => [parseInt(size),1]);
+            let stock2= values.stock.split(","); 
+
+            let stock = values.sizes.split(",").map((size, index) => [ parseInt(size), parseInt( stock2[index]) ]);
             
             let products = {
                 
@@ -82,7 +85,7 @@ export default function CreateProduct () {
 
                 setSucces(true)
                 setError(false)
-                setValues({ ...values, id: "", name: "", price: "", pricelister: "", description: "", marca: "", sizes: "", images1: "", images2: "", images3: "" });
+                setValues({ ...values, id: "", name: "", price: "", pricelister: "", description: "", marca: "", sizes: "", stock: "",images1: "", images2: "", images3: "" });
             })
             .catch(err => {
 
@@ -100,7 +103,7 @@ export default function CreateProduct () {
 
     const ClickReset = (event) => {
 
-        setValues({ ...values, name: "", price: "", pricelister: "", description: "", marca: "", sizes: "", images1: "", images2: "", images3: "" });
+        setValues({ ...values, name: "", price: "", pricelister: "", description: "", marca: "", sizes: "", stock: "", images1: "", images2: "", images3: "" });
         setError(false)
         setSucces(false)
     };
@@ -191,6 +194,19 @@ export default function CreateProduct () {
 
             </FormControl>
 
+            <FormControl fullWidth className={clsx(classes.margin)} variant="outlined">
+
+                <InputLabel htmlFor="product-stock">Stock</InputLabel>
+
+                <OutlinedInput
+                   id="product-stock"
+                   value={values.stock}
+                   onChange={handleChange('stock')}
+                   labelWidth={45}
+                />
+
+            </FormControl>
+
             <FormControl className={clsx(classes.margin)} variant="outlined">
 
                 <InputLabel htmlFor="product-images1">Imagen Nº1</InputLabel>
@@ -244,9 +260,9 @@ export default function CreateProduct () {
 
         </Grid>
 
-        <Grid item container direction="row" justify="space-between" alignItems="center"  className={classes.root} xs={6}>
+        <Grid item container direction="row" justify="space-between" alignItems="center"  className={classes.root} xs={12}>
             
-            <Grid item xs={1} >
+            <Grid item container direction="row" justify="center" alignItems="center" xs={6} >
 
                 <Button
                   variant="contained"
@@ -262,7 +278,7 @@ export default function CreateProduct () {
 
             </Grid>
 
-            <Grid item xs={1} >
+            <Grid item container direction="row" justify="center" alignItems="center" xs={6} >
 
                 <Button
                   variant="contained"

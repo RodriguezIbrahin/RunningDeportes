@@ -4,7 +4,7 @@ const authConfig = require('../auth');
 
 module.exports = function(req, res, next){
 
-    if(req.method == "POST" && req.path == "/users/singin" ||  req.path == "/users" ){
+   /*  if(req.method == "POST" && req.path == "/users/singin" ||  req.path == "/users" ){
         
         return next();
 
@@ -22,5 +22,5 @@ module.exports = function(req, res, next){
         } else { res.status(403).send( { message: 'No Tienes Permisos..'} );}
 
     }
-    else next()
+    else  */next()
 }
