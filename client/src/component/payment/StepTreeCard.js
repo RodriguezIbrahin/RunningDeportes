@@ -82,7 +82,7 @@ function StepTreeCard({paymentCard, cart}) {
                             
                     <Grid item container direction="row" justify="center" alignItems="center" xs={12}>
     
-                        Total  ${cart[0] && Math.floor(cart[0].products.reduce(function(Total, product){ return Total +( product.price * product.quantity) },0)*0.95)}.- 
+                        Total  ${cart[0] && Math.floor(cart[0].products.reduce(function(Total, product){ return Total +( product.price * product.quantity) },0))}.- 
                             
                     </Grid>
             
