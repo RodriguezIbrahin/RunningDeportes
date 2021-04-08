@@ -140,6 +140,7 @@ function AppBars(props) {
         <Toolbar>
 
           <IconButton
+            disabled
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
