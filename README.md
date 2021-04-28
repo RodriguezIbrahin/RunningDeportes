@@ -1,8 +1,8 @@
 <h1 align="center"># RunningDeportes </h1>
 
-_Tienda virtual (eCommerce) centrada a la venta de calzado deportivo en formato OnePage Website (Sitio de una sola pagina)_
+<p align="center"> Tienda virtual (eCommerce) centrada a la venta de calzado deportivo en formato OnePage Website (Sitio de una sola pagina) <p align="center">
 
-[Visita la tienda](https://www.runningdeportes.store/)
+<p align="center"> [Visita la tienda](https://www.runningdeportes.store/)<p align="center">
 
 ## Funcionalidades 🚀
 
