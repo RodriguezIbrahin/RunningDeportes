@@ -1,5 +1,7 @@
 # RunningDeportes
 
+[Visita la tienda](https://www.runningdeportes.store/)
+
 _Tienda virtual (eCommerce) centrada a la venta de calzado deportivo en formato OnePage Website (Sitio de una sola pagina)_
 
 ## Funcionalidades 🚀
@@ -20,4 +22,4 @@ _React | React-Redux | Material-UI | Axios_
 
 ## Back-End construido con 🛠️
 
-_NodeJs | ExpressJs | Sequelize | PostgreSQL | JsonWebToken _
+_NodeJs | ExpressJs | Sequelize | PostgreSQL | JsonWebToken_
